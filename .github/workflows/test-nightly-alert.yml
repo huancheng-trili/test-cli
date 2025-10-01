@@ -1,0 +1,22 @@
+name: Nightly test alert
+
+on:
+  workflow_run:
+    workflows: ["Continuous Integration"]
+    types:
+      - completed
+
+jobs:
+  notify-on-failure:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    name: Send notification when run fails
+    runs-on: ubuntu-latest
+    steps:
+      - name: Push slack message
+        uses: slackapi/slack-github-action@v2.1.1
+        with:
+          webhook: ${{ secrets.TEST_SLACK_WEBHOOK_URL }}
+          webhook-type: webhook-trigger
+          payload: |
+            "source": "GitHub",
+            "message": "Nightly test failed. ${{ github.event.workflow_run.url }}",
