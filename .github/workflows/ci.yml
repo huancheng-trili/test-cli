@@ -18,4 +18,4 @@ jobs:
       - name: Run
         shell: sh
         run: |
-          foo bar
+          echo hello
